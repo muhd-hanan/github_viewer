@@ -5,339 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Profile Viewer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl md:text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-            GitHub Profile Viewer
-        </h1>
-        
-        <!-- Search Section -->
-        <div class="bg-gray-800 rounded-xl p-6 shadow-lg mb-8">
-            <div class="flex flex-col md:flex-row gap-4">
+<body class="bg-green-100">
+    
+    <section class="bg-white w-[80%] h-[260px] mt-16 mx-auto pt-6 rounded-2xl shadow-xl ">
+        <div class=" text-cente">
+            <div class="flex justify-center">
+                <img src="./img/Untitled design.svg" alt="">
+            </div>
+            <h2 class="text-green-800 font-extrabold text-[20px] sm:text-[30px] text-center">GitHub Profile  Viewer</h2>
+            <p class="text-green-800 text-center mb-3 text-[12px] px-2 sm:text-[15px]">Enter a GitHub username to view their profile and top repositories</p>
+
+             <div class="flex  gap-4 justify-between w-[90%] sm:w-[60%] mx-auto  border-green-800 border-2 rounded-lg overflow-hidden  ">
                 <input 
                     type="text" 
                     id="usernameInput" 
                     placeholder="Enter GitHub username..." 
-            class="flex-grow px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                    class="w-full bg-transparent  pl-4 text-green-950 hover:shadow-xl shadow-green-500 focus:outline-none text-[13px] sm:text-[16px] rounded-lg "
                 >
                 <button 
                     id="searchButton" 
-                    class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-semibold hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2"
+                    class="px-4 py-3 bg-gradient-to-r from-green-500 to-green-600  font-semibold hover:opacity-90 text-white"
                 >
-                    <i class="fas fa-search"></i> Search
+                    <i class="fas fa-search"></i> <img src="./img/1.svg" alt="  " class="w-5 ">
                 </button>
             </div>
+            
         </div>
-        
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner" class="hidden text-center my-12">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-            <p class="text-gray-400">Fetching GitHub data...</p>
-        </div>
-        
-        <!-- Error Message -->
-        <div id="errorMessage" class="hidden bg-red-900/50 border border-red-700 rounded-lg p-4 mb-8 text-center">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            <span id="errorText">User not found. Please try another username.</span>
-        </div>
-        
-        <!-- Profile Section -->
-        <div id="profileSection" class="hidden bg-gray-800 rounded-xl p-6 shadow-lg mb-8">
-            <div class="flex flex-col md:flex-row gap-6">
-                <!-- Avatar and Basic Info -->
-                <div class="flex-shrink-0">
-                    <img id="avatar" src="" alt="Profile Avatar" class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-gray-700 shadow-lg">
-                    <div class="mt-4 flex justify-center space-x-4">
-                        <a id="profileLink" href="#" target="_blank" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center gap-2 transition-colors">
-                            <i class="fab fa-github"></i> Visit Profile
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Profile Details -->
-                <div class="flex-grow">
-                    <h2 id="name" class="text-2xl font-bold mb-1"></h2>
-                    <p id="login" class="text-gray-400 mb-3"></p>
-                    <p id="bio" class="text-gray-300 mb-4"></p>
-                    
-                    <div class="flex flex-wrap gap-4 mb-4">
-                        <div class="flex items-center bg-gray-700/50 px-4 py-2 rounded-lg">
-                            <i class="fas fa-users mr-2 text-blue-400"></i>
-                            <span id="followers" class="font-medium"></span> followers
-                        </div>
-                        <div class="flex items-center bg-gray-700/50 px-4 py-2 rounded-lg">
-                            <i class="fas fa-user-friends mr-2 text-purple-400"></i>
-                            <span id="following" class="font-medium"></span> following
-                        </div>
-                        <div class="flex items-center bg-gray-700/50 px-4 py-2 rounded-lg">
-                            <i class="fas fa-star mr-2 text-yellow-400"></i>
-                            <span id="totalStars" class="font-medium"></span> stars
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Top Repositories -->
-        <div id="reposSection" class="hidden bg-gray-800 rounded-xl p-6 shadow-lg mb-8">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <i class="fas fa-bookmark text-blue-400"></i> Top Repositories
-            </h2>
-            <div id="reposList" class="grid gap-4">
-                <!-- Repositories will be inserted here -->
-            </div>
-        </div>
-        
-        <!-- Language Chart -->
-        <div id="chartSection" class="hidden bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <i class="fas fa-code text-purple-400"></i> Language Usage
-            </h2>
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="w-full md:w-2/3 h-80">
-                    <canvas id="languageChart"></canvas>
-                </div>
-                <div id="chartLegend" class="w-full md:w-1/3 mt-4 md:mt-0 md:pl-4">
-                    <!-- Legend will be inserted here -->
-                </div>
-            </div>
-        </div>
+    </section>
+
+    <div id="loadingSpinner" class=" hidden text-center my-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mb-4"></div>
+            <p class="text-green-00">Fetching GitHub data...</p>
     </div>
 
-    <script>
-        // DOM Elements
-        const usernameInput = document.getElementById('usernameInput');
-        const searchButton = document.getElementById('searchButton');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const errorMessage = document.getElementById('errorMessage');
-        const profileSection = document.getElementById('profileSection');
-        const reposSection = document.getElementById('reposSection');
-        const chartSection = document.getElementById('chartSection');
+    <div id="errorMessage" class="hidden bg-red-200 mt-5 w-[80%] max-w-[400px] mx-auto border border-red-700 rounded-lg p-4 mb-8 text-center">
+    <span id="errorText" class="text-[12px] sm:text-[19px]">User not found. Please try another username.</span>
+  </div>
+
+  <div id="userSection" class="hidden w-[80%] mx-auto mt-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-7" >
+      <!-- User Info -->
+      <div class="col-span-1 bg-white rounded-lg shadow-xl p-6 text-center">
+        <img id="avatar" src="" alt="Profile Avatar" class="w-24 h-24 mx-auto rounded-full border-4 border-green-700 mb-4">
         
-        // Chart variables
-        let languageChart = null;
-        
-        // Colors for the pie chart
-        const chartColors = [
-            '#3B82F6', // blue-500
-            '#8B5CF6', // purple-500
-            '#EC4899', // pink-500
-            '#10B981', // emerald-500
-            '#F59E0B', // amber-500
-            '#EF4444', // red-500
-            '#14B8A6', // teal-500
-            '#F97316', // orange-500
-            '#6366F1', // indigo-500
-            '#84CC16', // lime-500
-        ];
-        
-        // Event Listeners
-        searchButton.addEventListener('click', fetchGitHubData);
-        usernameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') fetchGitHubData();
-        });
-        
-        // Main function to fetch GitHub data
-        async function fetchGitHubData() {
-            const username = usernameInput.value.trim();
-            if (!username) return;
-            
-            // Show loading, hide other sections
-            loadingSpinner.classList.remove('hidden');
-            errorMessage.classList.add('hidden');
-            profileSection.classList.add('hidden');
-            reposSection.classList.add('hidden');
-            chartSection.classList.add('hidden');
-            
-            try {
-                // Fetch user profile
-                const userResponse = await fetch(`https://api.github.com/users/${username}`);
-                if (!userResponse.ok) throw new Error('User not found');
-                const userData = await userResponse.json();
-                
-                // Fetch user repositories
-                const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?sort=stars&per_page=100`);
-                if (!reposResponse.ok) throw new Error('Could not fetch repositories');
-                const reposData = await reposResponse.json();
-                
-                // Process and display data
-                displayProfile(userData);
-                displayTopRepos(reposData);
-                await processLanguageData(reposData);
-                
-                // Show sections
-                profileSection.classList.remove('hidden');
-                reposSection.classList.remove('hidden');
-                chartSection.classList.remove('hidden');
-                
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('errorText').textContent = error.message;
-                errorMessage.classList.remove('hidden');
-            } finally {
-                loadingSpinner.classList.add('hidden');
-            }
+        <p id="login" class="text-green-800 text-sm mb-1 text-[16px] font-semibold "></p>
+        <p id="bio" class="text-gray-600 text-sm mb-4"></p>
+        <p class="text-sm text-gray-700 mb-1">Public Repos: <span id="publicRepos"></span></p>
+        <p class="text-sm text-gray-700 mb-1">Followers: <span id="followers"></span></p>
+        <p class="text-sm text-gray-700 mb-4">Following: <span id="following"></span></p>
+        <a id="profileLink" href="#" target="_blank" class="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Visit Profile</a>
+      </div>
+
+      <!-- Repositories -->
+      <div class="col-span-1 md:col-span-3 bg-white rounded-lg shadow-xl p-6">
+        <h2 class="text-xl font-bold mb-4 text-green-900">Top Repositories</h2>
+        <div id="reposList" class="grid gap-4 mb-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("searchButton").addEventListener("click", async function () {
+      const username = document.getElementById("usernameInput").value.trim();
+      const loadingSpinner = document.getElementById("loadingSpinner");
+      const errorMessage = document.getElementById("errorMessage");
+      const errorText = document.getElementById("errorText");
+      const userSection = document.getElementById("userSection");
+
+      if (!username) return;
+
+      loadingSpinner.classList.remove("hidden");
+      errorMessage.classList.add("hidden");
+      userSection.classList.add("hidden");
+
+      setTimeout(async () => {
+        try {
+          const userRes = await fetch(`https://api.github.com/users/${username}`);
+          if (!userRes.ok) throw new Error("User not found");
+          const userData = await userRes.json();
+
+          document.getElementById("avatar").src = userData.avatar_url;
+          
+          document.getElementById("login").textContent = `@${userData.login}`;
+          document.getElementById("bio").textContent = userData.bio || "No bio available";
+          document.getElementById("profileLink").href = userData.html_url;
+
+          document.getElementById("publicRepos").textContent = userData.public_repos;
+          document.getElementById("followers").textContent = userData.followers;
+          document.getElementById("following").textContent = userData.following;
+
+          const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=5`);
+          const reposData = await reposRes.json();
+          const reposList = document.getElementById("reposList");
+          reposList.innerHTML = "";
+
+          for (let repo of reposData) {
+            const div = document.createElement("div");
+            div.className = "p-4 border border-green-300 rounded-md text-green-800 bg-green-50";
+            div.innerHTML = `<a href="${repo.html_url}" target="_blank" class="hover:underline">${repo.name}</a>`;
+            reposList.appendChild(div);
+          }
+
+          userSection.classList.remove("hidden");
+
+        } catch (error) {
+          errorMessage.classList.remove("hidden");
+          errorText.textContent = error.message;
         }
-        
-        // Display user profile
-        function displayProfile(user) {
-            document.getElementById('avatar').src = user.avatar_url;
-            document.getElementById('name').textContent = user.name || user.login;
-            document.getElementById('login').textContent = `@${user.login}`;
-            document.getElementById('bio').textContent = user.bio || 'No bio available';
-            document.getElementById('followers').textContent = user.followers;
-            document.getElementById('following').textContent = user.following;
-            document.getElementById('profileLink').href = user.html_url;
-        }
-        
-        // Display top repositories
-        function displayTopRepos(repos) {
-            // Sort by stars and take top 5
-            const topRepos = repos
-                .sort((a, b) => b.stargazers_count - a.stargazers_count)
-                .slice(0, 5);
-            
-            // Calculate total stars for profile
-            const totalStars = repos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
-            document.getElementById('totalStars').textContent = totalStars;
-            
-            const reposList = document.getElementById('reposList');
-            reposList.innerHTML = '';
-            
-            if (topRepos.length === 0) {
-                reposList.innerHTML = '<p class="text-gray-400">No repositories found</p>';
-                return;
-            }
-            
-            topRepos.forEach(repo => {
-                const repoElement = document.createElement('div');
-                repoElement.className = 'bg-gray-700/50 p-4 rounded-lg hover:bg-gray-700 transition-colors';
-                repoElement.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <a href="${repo.html_url}" target="_blank" class="font-semibold hover:text-blue-400 transition-colors">
-                                ${repo.name}
-                            </a>
-                            ${repo.description ? `<p class="text-gray-300 mt-1">${repo.description}</p>` : ''}
-                        </div>
-                        <div class="flex items-center bg-gray-800 px-3 py-1 rounded-full">
-                            <i class="fas fa-star text-yellow-400 mr-1"></i>
-                            <span>${repo.stargazers_count}</span>
-                        </div>
-                    </div>
-                `;
-                reposList.appendChild(repoElement);
-            });
-        }
-        
-        // Process language data and create chart
-        async function processLanguageData(repos) {
-            const languageStats = {};
-            
-            // Filter out repos without languages and fetch language data
-            const reposWithLanguages = repos.filter(repo => !repo.fork);
-            for (const repo of reposWithLanguages) {
-                try {
-                    const langResponse = await fetch(repo.languages_url);
-                    if (langResponse.ok) {
-                        const langData = await langResponse.json();
-                        for (const [lang, bytes] of Object.entries(langData)) {
-                            languageStats[lang] = (languageStats[lang] || 0) + bytes;
-                        }
-                    }
-                } catch (error) {
-                    console.error(`Error fetching languages for ${repo.name}:`, error);
-                }
-            }
-            
-            // Sort languages by usage
-            const sortedLanguages = Object.entries(languageStats)
-                .sort((a, b) => b[1] - a[1]);
-            
-            // Prepare data for chart
-            const labels = sortedLanguages.map(([lang]) => lang);
-            const data = sortedLanguages.map(([, bytes]) => bytes);
-            const backgroundColors = labels.map((_, i) => chartColors[i % chartColors.length]);
-            
-            // Create or update chart
-            createLanguageChart(labels, data, backgroundColors);
-        }
-        
-        // Create the language pie chart
-        function createLanguageChart(labels, data, backgroundColors) {
-            const ctx = document.getElementById('languageChart').getContext('2d');
-            
-            // Destroy previous chart if exists
-            if (languageChart) {
-                languageChart.destroy();
-            }
-            
-            languageChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: backgroundColors,
-                        borderWidth: 0,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false,
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    return `${label}: ${percentage}%`;
-                                }
-                            }
-                        }
-                    },
-                    animation: {
-                        animateScale: true,
-                        animateRotate: true
-                    }
-                }
-            });
-            
-            // Create custom legend
-            const legendContainer = document.getElementById('chartLegend');
-            legendContainer.innerHTML = '';
-            
-            if (labels.length === 0) {
-                legendContainer.innerHTML = '<p class="text-gray-400">No language data available</p>';
-                return;
-            }
-            
-            const legendList = document.createElement('div');
-            legendList.className = 'space-y-2';
-            
-            labels.forEach((label, i) => {
-                const percentage = Math.round((data[i] / data.reduce((a, b) => a + b, 0)) * 100);
-                
-                const legendItem = document.createElement('div');
-                legendItem.className = 'flex items-center';
-                legendItem.innerHTML = `
-                    <span class="inline-block w-4 h-4 rounded-full mr-2" style="background-color: ${backgroundColors[i]};"></span>
-                    <span class="text-sm font-medium">${label}</span>
-                    <span class="ml-auto text-gray-400 text-sm">${percentage}%</span>
-                `;
-                legendList.appendChild(legendItem);
-            });
-            
-            legendContainer.appendChild(legendList);
-        }
-    </script>
+
+        loadingSpinner.classList.add("hidden");
+      }, 1000);
+    });
+</script>
+
+
+   
+    
 </body>
 </html>
